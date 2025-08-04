@@ -1,4 +1,6 @@
 import React, { useState, useRef } from "react";
+import { TiLocationArrow } from "react-icons/ti";
+import Button from "./Button.jsx";
 
 const Hero = () => {
     const [currentIndex, setCurrentIndex] = useState(1);
@@ -54,7 +56,7 @@ const Hero = () => {
                     />
                     <video
                         src={getVideoSrc(currentIndex === totalVideos - 1 ? 1 : currentIndex)}
-                        autoPlay
+                        //autoPlay
                         loop
                         muted
                         className="absolute left-0 top-0 size-full object-cover object-center"
@@ -68,7 +70,7 @@ const Hero = () => {
                     <div className="mt-24 px-5 sm:px-10">
                         <h1 className="hero-heading special-font text-blue-100">redefi<b>n</b>e</h1>
                         <p className="mb-5 max-w-64 font-robert-regular text-blue-100">Enter the MetaGame Layer <br /> Unleash the Play Economy</p>
-
+                        <Button id="watch-trailer" title="Watch Trailer" leftIcon={<TiLocationArrow />} containerClass="!bg-yellow-300 flex-center gap-1" />
                     </div>
                 </div>
             </div>
