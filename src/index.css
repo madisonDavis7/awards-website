@@ -110,7 +110,7 @@ body {
         @apply relative col-span-2 overflow-hidden rounded-md transition-transform duration-300 ease-out;
         border-width: 1px;
         border-style: solid;
-        border-color: rgba(255,255,255,0.2);
+        border-color: rgba(255, 255, 255, 0.2);
     }
 
     .bento-tilt_2 {
