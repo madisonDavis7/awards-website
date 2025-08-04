@@ -3,7 +3,9 @@ import React from 'react';
 //component 
 const App = () => {
   return (
-    <div>App </div>
+    <main>
+      <h1 className="text-5xl text-orange-500 font-bold">Welcome</h1>
+    </main>
   )
 }
 
