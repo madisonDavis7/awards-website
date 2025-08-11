@@ -1,19 +1,41 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { TiLocationArrow } from "react-icons/ti";
 import Button from "./Button.jsx";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 const Hero = () => {
     const [currentIndex, setCurrentIndex] = useState(1);
     const [hasClicked, setHasClicked] = useState(false);
+
     const [isLoading, setIsLoading] = useState(true);
     const [loadedVideos, setLoadedVideos] = useState(0);
 
-    const totalVideos = 3;
+    const totalVideos = 4;
     const nextVdRef = useRef(null);
 
     const handleVideoLoad = () => {
         setLoadedVideos((prev) => prev + 1);
     };
+
+    // Preload videos to prevent white flash
+    useEffect(() => {
+        const preloadVideos = () => {
+            for (let i = 1; i <= totalVideos; i++) {
+                const video = document.createElement('video');
+                video.src = getVideoSrc(i);
+                video.preload = 'metadata';
+                video.load();
+            }
+        };
+        preloadVideos();
+    }, []);
+
+    useEffect(() => {
+        if (loadedVideos === totalVideos) {
+            setIsLoading(false);
+        }
+    }, [loadedVideos]);
 
     // Calculate the index for the next video based on the current index
     //0 % 4 = 0 => 0 = 1 = 2 and so on
@@ -23,6 +45,33 @@ const Hero = () => {
         setHasClicked(true);
         setCurrentIndex(upcomingVideoIndex);
     };
+
+    useGSAP(() => {
+        if (hasClicked) {
+            gsap.set('#next-video', { visibility: 'visible' });
+            gsap.to('#next-video', {
+                transformOrigin: 'center center',
+                scale: 1,
+                width: '100%',
+                height: '100%',
+                duration: 1,
+                ease: 'power1.inOut',
+                onStart: () => nextVdRef.current.play(),
+            });
+
+            gsap.from('#current-video', {
+                transformOrigin: 'center center',
+                scale: 0,
+                duration: 1.5,
+                ease: 'power1.inOut',
+            });
+        }
+    },
+        {
+            dependencies: [currentIndex],
+            revertOnUpdate: true
+        }
+    );
 
     const getVideoSrc = (index) => {
         return `/videos/hero-${index}.mp4`;
@@ -39,6 +88,7 @@ const Hero = () => {
                                 src={getVideoSrc(upcomingVideoIndex)}
                                 loop
                                 muted
+                                preload="metadata"
                                 id="current-video"
                                 className="size-64 origin-center scale-150 object-cover object-center"
                                 onLoadedData={handleVideoLoad}
@@ -50,15 +100,17 @@ const Hero = () => {
                         src={getVideoSrc(currentIndex)}
                         loop
                         muted
+                        preload="metadata"
                         id="next-video"
-                        className="absolute-center invisible absolute z-20 size-65 object-cover object-center"
+                        className="absolute-center invisible absolute z-20 size-64 object-cover object-center"
                         onLoadedData={handleVideoLoad}
                     />
                     <video
-                        src={getVideoSrc(currentIndex === totalVideos - 1 ? 1 : currentIndex)}
-                        //autoPlay
+                        src={getVideoSrc(currentIndex)}
+                        autoPlay
                         loop
                         muted
+                        preload="metadata"
                         className="absolute left-0 top-0 size-full object-cover object-center"
                         onLoadedData={handleVideoLoad}
                     />
@@ -74,6 +126,9 @@ const Hero = () => {
                     </div>
                 </div>
             </div>
+            <h1 className="special-font hero-heading absolute bottom-5 right-5 text-black">
+                G<b>A</b>ming
+            </h1>
         </div>
     );
 };
